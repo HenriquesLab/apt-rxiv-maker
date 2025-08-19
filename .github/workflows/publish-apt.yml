@@ -106,8 +106,7 @@ jobs:
           CHANGELOG_ENTRY="${CHANGELOG_ENTRY}  * Automated build from GitHub Actions\n\n"
           CHANGELOG_ENTRY="${CHANGELOG_ENTRY} -- Rxiv-Maker Contributors <rxiv.maker@gmail.com>  $(date -R)\n\n"
 
-          # Copy packaging files to build location
-          cp -r debian .
+          # Packaging files are already in place
 
           # Prepend to existing changelog
           if [[ -f debian/changelog ]]; then
