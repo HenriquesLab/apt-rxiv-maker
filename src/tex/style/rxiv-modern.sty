@@ -1,0 +1,41 @@
+% Rxiv-Maker Modern Style Package
+% Additional modern styling for scientific articles
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{rxiv-modern}[2024/08/19 v1.5.18 Rxiv-Maker Modern Style]
+
+% Load base rxiv-maker package
+\RequirePackage{rxiv-maker}
+
+% Additional modern styling
+\RequirePackage{tcolorbox}
+\RequirePackage{enumitem}
+\RequirePackage{titlesec}
+
+% Modern section styling
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{rxivblue}}
+  {\thesubsection}{1em}{}
+
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\color{rxivgray}}
+  {\thesubsubsection}{1em}{}
+
+% Modern list styling
+\setlist[itemize]{leftmargin=*,nosep}
+\setlist[enumerate]{leftmargin=*,nosep}
+
+% Callout boxes
+\newtcolorbox{callout}[1][]{
+  colback=rxivblue!5,
+  colframe=rxivblue,
+  arc=3pt,
+  boxrule=0.5pt,
+  left=10pt,
+  right=10pt,
+  top=10pt,
+  bottom=10pt,
+  #1
+}
+
+\endinput
