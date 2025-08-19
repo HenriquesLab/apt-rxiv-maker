@@ -257,10 +257,10 @@ jobs:
 
     strategy:
       matrix:
-        ubuntu-version: ['22.04']
-        test-type: ['quick']
-      fail-fast: false
-      max-parallel: 2
+        ubuntu-version: ['22.04']  # Using primary version for matrix tests
+        test-type: ['quick']       # Using quick tests for pull requests
+      fail-fast: ${{ fromJson(needs.validate-environment.outputs.fail-fast) }}
+      max-parallel: ${{ fromJson(needs.validate-environment.outputs.parallel-jobs) }}
 
     steps:
       - name: Checkout repository

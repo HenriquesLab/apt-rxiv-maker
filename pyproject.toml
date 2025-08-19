@@ -1,0 +1,79 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rxiv-maker"
+dynamic = ["version"]
+description = "Automated LaTeX article generation with modern CLI"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Rxiv-Maker Contributors", email = "rxiv.maker@gmail.com"},
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Text Processing :: Markup :: LaTeX",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "matplotlib>=3.6.0",
+    "seaborn>=0.12.0",
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+    "Pillow>=9.0.0",
+    "pypdf>=4.0.0",
+    "pyyaml>=6.0.0",
+    "python-dotenv>=1.0.0",
+    "click>=8.0.0",
+    "rich>=13.0.0",
+    "requests>=2.28.0",
+    "packaging>=21.0.0",
+    "platformdirs>=4.0.0",
+    "typing-extensions>=4.0.0",
+    "rich-click",
+    "tomli-w",
+    "crossref-commons",
+    "psutil",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=22.0.0",
+    "flake8>=5.0.0",
+    "mypy>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/henriqueslab/rxiv-maker"
+Repository = "https://github.com/henriqueslab/rxiv-maker.git"
+Issues = "https://github.com/henriqueslab/rxiv-maker/issues"
+
+[project.scripts]
+rxiv = "rxiv_maker.cli:main"
+
+[tool.hatch.version]
+path = "src/rxiv_maker/__version__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/rxiv_maker"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/README.md",
+    "/LICENSE",
+]
