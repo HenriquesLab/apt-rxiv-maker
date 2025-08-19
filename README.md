@@ -1,6 +1,6 @@
 # APT Repository for Rxiv-Maker
 
-[![APT Package Tests](https://github.com/paxcalpt/apt-rxiv-maker/actions/workflows/test-apt-containers.yml/badge.svg)](https://github.com/paxcalpt/apt-rxiv-maker/actions/workflows/test-apt-containers.yml)
+[![APT Package Tests](https://github.com/HenriquesLab/apt-rxiv-maker/actions/workflows/test-apt-containers.yml/badge.svg)](https://github.com/HenriquesLab/apt-rxiv-maker/actions/workflows/test-apt-containers.yml)
 
 This repository serves as a standalone APT repository for `rxiv-maker`, providing Debian/Ubuntu packages for easy installation and management.
 
@@ -10,10 +10,10 @@ This repository serves as a standalone APT repository for `rxiv-maker`, providin
 
 ```bash
 # Add GPG key
-curl -fsSL https://raw.githubusercontent.com/paxcalpt/apt-rxiv-maker/apt-repo/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/rxiv-maker.gpg
+curl -fsSL https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/rxiv-maker.gpg
 
 # Add APT repository
-echo "deb [arch=amd64 signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/paxcalpt/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
 
 # Update package list and install
 sudo apt update
@@ -78,7 +78,7 @@ sudo dpkg -i dist/rxiv-maker_*.deb
 ./scripts/test-apt-container.sh --ubuntu-version 22.04 --test-type installation
 
 # Run validation tests
-./scripts/validate-apt-repo.sh --repo-url "https://raw.githubusercontent.com/paxcalpt/apt-rxiv-maker/apt-repo"
+./scripts/validate-apt-repo.sh --repo-url "https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo"
 ```
 
 ### Repository Management
@@ -126,7 +126,7 @@ The repository uses GitHub Actions for:
 1. **GPG Key Import Fails**:
    ```bash
    # Alternative import method
-   wget -qO - https://raw.githubusercontent.com/paxcalpt/apt-rxiv-maker/apt-repo/pubkey.gpg | sudo apt-key add -
+   wget -qO - https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo/pubkey.gpg | sudo apt-key add -
    ```
 
 2. **Repository Not Found**:
@@ -146,7 +146,7 @@ The repository uses GitHub Actions for:
 ### Getting Help
 
 - [Main Project Issues](https://github.com/henriqueslab/rxiv-maker/issues)
-- [APT Repository Issues](https://github.com/paxcalpt/apt-rxiv-maker/issues)
+- [APT Repository Issues](https://github.com/HenriquesLab/apt-rxiv-maker/issues)
 - [Documentation](./docs/)
 
 ## Contributing

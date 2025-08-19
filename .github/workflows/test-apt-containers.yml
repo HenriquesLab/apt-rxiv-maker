@@ -178,7 +178,7 @@ jobs:
       - name: Validate APT repository
         run: |
           ./scripts/validate-apt-repo.sh \
-            --repo-url "https://raw.githubusercontent.com/paxcalpt/apt-rxiv-maker/apt-repo" \
+            --repo-url "https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo" \
             --output validation-results \
             --verbose
 

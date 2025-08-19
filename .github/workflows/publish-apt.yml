@@ -271,10 +271,10 @@ jobs:
 
           ```bash
           # Add GPG key
-          curl -fsSL https://raw.githubusercontent.com/paxcalpt/apt-rxiv-maker/apt-repo/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/rxiv-maker.gpg
+          curl -fsSL https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/rxiv-maker.gpg
 
           # Add repository
-          echo "deb [arch=amd64] https://raw.githubusercontent.com/paxcalpt/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
+          echo "deb [arch=amd64] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
 
           # Update package list
           sudo apt update
@@ -414,7 +414,7 @@ jobs:
           else
             if [[ "${{ needs.setup-apt-repo.result }}" == "success" ]]; then
               echo "✅ **APT Repository**: Updated and published to apt-repo branch" >> $GITHUB_STEP_SUMMARY
-              echo "   - Repository URL: https://raw.githubusercontent.com/paxcalpt/apt-rxiv-maker/apt-repo" >> $GITHUB_STEP_SUMMARY
+              echo "   - Repository URL: https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo" >> $GITHUB_STEP_SUMMARY
             else
               echo "❌ **APT Repository**: Failed" >> $GITHUB_STEP_SUMMARY
             fi
@@ -428,10 +428,10 @@ jobs:
             echo "### APT Repository (Ubuntu/Debian)" >> $GITHUB_STEP_SUMMARY
             echo '```bash' >> $GITHUB_STEP_SUMMARY
             echo "# Add GPG key" >> $GITHUB_STEP_SUMMARY
-            echo "curl -fsSL https://raw.githubusercontent.com/paxcalpt/apt-rxiv-maker/apt-repo/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/rxiv-maker.gpg" >> $GITHUB_STEP_SUMMARY
+            echo "curl -fsSL https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/rxiv-maker.gpg" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "# Add repository" >> $GITHUB_STEP_SUMMARY
-            echo 'echo "deb [arch=amd64] https://raw.githubusercontent.com/paxcalpt/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list' >> $GITHUB_STEP_SUMMARY
+            echo 'echo "deb [arch=amd64] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list' >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "# Install package" >> $GITHUB_STEP_SUMMARY
             echo "sudo apt update && sudo apt install rxiv-maker" >> $GITHUB_STEP_SUMMARY

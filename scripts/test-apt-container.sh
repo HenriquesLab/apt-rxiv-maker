@@ -342,8 +342,8 @@ add_apt_repository() {
     fi
 
     # Repository configuration
-    local repo_url="${RXIV_APT_TEST_REPO_URL:-https://raw.githubusercontent.com/paxcalpt/apt-rxiv-maker/apt-repo}"
-    local gpg_key_url="${RXIV_APT_TEST_GPG_KEY:-https://raw.githubusercontent.com/paxcalpt/apt-rxiv-maker/$REPO_BRANCH/pubkey.gpg}"
+    local repo_url="${RXIV_APT_TEST_REPO_URL:-https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo}"
+    local gpg_key_url="${RXIV_APT_TEST_GPG_KEY:-https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/$REPO_BRANCH/pubkey.gpg}"
 
     log "Repository URL: $repo_url"
     log "GPG key URL: $gpg_key_url"

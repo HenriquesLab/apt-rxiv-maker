@@ -192,10 +192,10 @@ Add this repository to your system:
 
 ```bash
 # Add GPG key
-curl -fsSL https://raw.githubusercontent.com/paxcalpt/apt-rxiv-maker/apt-repo/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/rxiv-maker.gpg
+curl -fsSL https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/rxiv-maker.gpg
 
 # Add repository
-echo "deb [arch=amd64] https://raw.githubusercontent.com/paxcalpt/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
+echo "deb [arch=amd64] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
 
 # Update package list
 sudo apt update
@@ -353,7 +353,7 @@ publish_repository() {
     log "Pushing to origin/$BRANCH_NAME..."
     if git push origin "$BRANCH_NAME"; then
         success "Repository published successfully"
-        log "Repository available at: https://raw.githubusercontent.com/paxcalpt/apt-rxiv-maker/apt-repo"
+        log "Repository available at: https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo"
     else
         error "Failed to push repository"
         warn "Make sure you have push access to the repository"
@@ -412,10 +412,10 @@ main() {
 📦 Repository Usage Instructions:
 
 1. Add GPG key:
-   curl -fsSL https://raw.githubusercontent.com/paxcalpt/apt-rxiv-maker/$BRANCH_NAME/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/rxiv-maker.gpg
+   curl -fsSL https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/$BRANCH_NAME/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/rxiv-maker.gpg
 
 2. Add repository:
-   echo "deb [arch=amd64] https://raw.githubusercontent.com/paxcalpt/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
+   echo "deb [arch=amd64] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
 
 3. Install package:
    sudo apt update && sudo apt install rxiv-maker

@@ -24,9 +24,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
 # Default values
-REPO_URL="https://raw.githubusercontent.com/paxcalpt/apt-rxiv-maker/apt-repo"
+REPO_URL="https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo"
 REPO_BRANCH="apt-repo"
-GPG_KEY_URL="https://raw.githubusercontent.com/paxcalpt/apt-rxiv-maker/apt-repo/pubkey.gpg"
+GPG_KEY_URL="https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo/pubkey.gpg"
 OUTPUT_DIR="$PROJECT_ROOT/validation-results"
 VERBOSE="false"
 DEBUG="false"
@@ -153,7 +153,7 @@ setup_environment() {
 
     # Auto-detect GPG key URL if using default repository
     if [[ "$REPO_URL" == "https://henriqueslab.github.io/rxiv-maker/" ]]; then
-        GPG_KEY_URL="https://raw.githubusercontent.com/paxcalpt/apt-rxiv-maker/$REPO_BRANCH/pubkey.gpg"
+        GPG_KEY_URL="https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/$REPO_BRANCH/pubkey.gpg"
     fi
 
     # Create output directory
