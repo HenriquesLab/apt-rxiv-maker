@@ -1,0 +1,7 @@
+# reprepro configuration options for rxiv-maker APT repository
+
+# Verbose output for debugging
+verbose
+
+# Base directory for repository
+basedir .
