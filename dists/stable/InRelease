@@ -1,0 +1,72 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Origin: Rxiv-Maker Project
+Label: Rxiv-Maker APT Repository
+Suite: stable
+Codename: stable
+Date: Fri, 22 Aug 2025 15:03:31 UTC
+Architectures: amd64 arm64
+Components: main
+Description: APT repository for rxiv-maker - Automated LaTeX article generation
+MD5Sum:
+ 1e1839340f30d2987f137298ddb77f63 2001 main/binary-amd64/Packages
+ 18965b32ba2f5e1f92bee5f68c1f2869 1042 main/binary-amd64/Packages.gz
+ c27f3a8b97b38292a1a67f0c6573d225 1116 main/binary-amd64/Packages.bz2
+ 080481c06ae4c9359f432287b552edae 192 main/binary-amd64/Release
+ 1e1839340f30d2987f137298ddb77f63 2001 main/binary-arm64/Packages
+ 18965b32ba2f5e1f92bee5f68c1f2869 1042 main/binary-arm64/Packages.gz
+ c27f3a8b97b38292a1a67f0c6573d225 1116 main/binary-arm64/Packages.bz2
+ 03224d320fd1b86eb70db5bac75fe3b9 192 main/binary-arm64/Release
+ b9a8892cee3b8648a237b5acedf0db2c 1394 main/Contents-amd64
+ 9a525e3371fddd1946d8e9afa99084d1 291 main/Contents-amd64.gz
+ b5a15f0208c7875cba1d95ab123064fc 395 main/Contents-amd64.bz2
+ b9a8892cee3b8648a237b5acedf0db2c 1394 main/Contents-arm64
+ 9a525e3371fddd1946d8e9afa99084d1 291 main/Contents-arm64.gz
+ b5a15f0208c7875cba1d95ab123064fc 395 main/Contents-arm64.bz2
+SHA1:
+ 9df5e46525ba3d2bc68186bffaa34eeea57dba8d 2001 main/binary-amd64/Packages
+ d32783e6f02f916aa104e3b2771891f2b3b8bf7a 1042 main/binary-amd64/Packages.gz
+ 1cc01f6362696886e199abaeb44ca65b539410b8 1116 main/binary-amd64/Packages.bz2
+ d8260142b8ebd9158f847143c819fb477c13475d 192 main/binary-amd64/Release
+ 9df5e46525ba3d2bc68186bffaa34eeea57dba8d 2001 main/binary-arm64/Packages
+ d32783e6f02f916aa104e3b2771891f2b3b8bf7a 1042 main/binary-arm64/Packages.gz
+ 1cc01f6362696886e199abaeb44ca65b539410b8 1116 main/binary-arm64/Packages.bz2
+ dd5ab47f4b61831bd1ef7031145f0c9623be100a 192 main/binary-arm64/Release
+ 4c5319d30608e26dda6dec99331ab83e59a653e0 1394 main/Contents-amd64
+ 2de4130ec924ed190a4072bd37685616455b0946 291 main/Contents-amd64.gz
+ 7e9e4c36e18314ec73e1962e6c86077382281d61 395 main/Contents-amd64.bz2
+ 4c5319d30608e26dda6dec99331ab83e59a653e0 1394 main/Contents-arm64
+ 2de4130ec924ed190a4072bd37685616455b0946 291 main/Contents-arm64.gz
+ 7e9e4c36e18314ec73e1962e6c86077382281d61 395 main/Contents-arm64.bz2
+SHA256:
+ 31cacf55d237e3d11c6dbfc359aeeacef674e340a7416db4547653693a5e1a8b 2001 main/binary-amd64/Packages
+ 99ba574dd1e5fb6bab21df11a8661ffd67a683a54c0b0c710941ae014be165d6 1042 main/binary-amd64/Packages.gz
+ 9fe447b45b540eb8c4db18371be763fd23cab20f4394208b0c4d190f53944200 1116 main/binary-amd64/Packages.bz2
+ 6be0e657abd59183d2502a569b7cfdfc25518a188746a00654220b1898b0f325 192 main/binary-amd64/Release
+ 31cacf55d237e3d11c6dbfc359aeeacef674e340a7416db4547653693a5e1a8b 2001 main/binary-arm64/Packages
+ 99ba574dd1e5fb6bab21df11a8661ffd67a683a54c0b0c710941ae014be165d6 1042 main/binary-arm64/Packages.gz
+ 9fe447b45b540eb8c4db18371be763fd23cab20f4394208b0c4d190f53944200 1116 main/binary-arm64/Packages.bz2
+ 6703879a23c6731b2ba283e10f7d807d98a2244c124cb14ebdc2994aabd83b68 192 main/binary-arm64/Release
+ 8938f30ed4cd6ef7f8176a7fc9ec9f10d5c275c0e73f645244f2e83ca428d8dc 1394 main/Contents-amd64
+ 63374e30e75d79c70ea131fc52d949d5cdf8e8d38c62eefc535598e379b0af14 291 main/Contents-amd64.gz
+ d91a01a43ad591df1fb58db8b68c9e422b0400e6ce8d4f1306068291dbd64406 395 main/Contents-amd64.bz2
+ 8938f30ed4cd6ef7f8176a7fc9ec9f10d5c275c0e73f645244f2e83ca428d8dc 1394 main/Contents-arm64
+ 63374e30e75d79c70ea131fc52d949d5cdf8e8d38c62eefc535598e379b0af14 291 main/Contents-arm64.gz
+ d91a01a43ad591df1fb58db8b68c9e422b0400e6ce8d4f1306068291dbd64406 395 main/Contents-arm64.bz2
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEo6wXlC28UXPEEbQw8GLhp9cDyoUFAmiohsMACgkQ8GLhp9cD
+yoUKbw//VE2LxcXIZ9h3CPs6ocyt7F8i1WudJ5h0e9D27guoP/tw53uJ5d2Hje6/
+L8BSJ7O7d3kbY1wgCZ3gx3i8TUisWpR/DnUMpS+eT17mfO2kQN4rXTleJD0AeZf5
++2ZnxS1iFmvb+Vt/R5uMTiUWgoUs1mekX41Ay2qPXMugT8VD+3nqRYifKFYMGkDE
+T1b1azlBVKcE5dXqGopniLZDH+lEXMl2hRJKlmy3C1A2qp4G3Ta6UVLUW0z4WYlJ
+eyXoUcyrX7vhRe9nEJaLleJ+n9Be6QcfWWcVHTlmIzoWxl5ivH7s8/pIV93GkXlg
+E519hy1+L0+slhejKGyM72UroTDf4/EkNsSjuRQTDOTyminm4q1XowF9Xa6ZPxn8
+5DKNGvIIhXRf2jjQq4k0GQMckkcmRuK10s15ESCOSisWamWqVoHCIjkV7mSjlWDT
+Kmzt3m2iwj6OM99nzcYKgLxzYeRB4DmJfZOca2YuIwKim8Reh61CkhgUB+fQZdbX
+IDLE07RyGscZX7J8t+TDpirS+rBqIKi8FKyPT3vnBSUBIM/e9pT8oS0nAR6qfMHn
+Z1em/sZlN4Oic0KNp5r9oX1qpCrt3IcWVZbKimslqcqYqdVZvCadjJFEkAd7ewzh
+NfeW+kdv8ix+CnBO8YySx9O6QIDENI74uSOQ/YBfKE+TdDGqQ6M=
+=pcyw
+-----END PGP SIGNATURE-----

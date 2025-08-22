@@ -1,0 +1,33 @@
+Package: rxiv-maker
+Version: 1.5.25-1
+Architecture: all
+Maintainer: Rxiv-Maker Contributors <rxiv.maker@gmail.com>
+Installed-Size: 58
+Depends: python3-click (>= 8.0.0), python3-dotenv (>= 1.0.0), python3-matplotlib (>= 3.6.0), python3-numpy (>= 1.24.0), python3-packaging (>= 21.0.0), python3-pandas (>= 2.0.0), python3-pil (>= 9.0.0), python3-platformdirs (>= 4.0.0), python3-psutil, python3-pypdf (>= 4.0.0), python3-requests (>= 2.28.0), python3-rich (>= 13.0.0), python3-rich-click, python3-seaborn (>= 0.12.0), python3-tomli-w, python3-typing-extensions (>= 4.0.0), python3-yaml (>= 6.0.0), python3:any, python3-crossrefapi, texlive-latex-base, texlive-latex-extra, texlive-fonts-recommended, texlive-science, texlive-fonts-extra, biber
+Recommends: docker.io | podman, nodejs (>= 16), npm, r-base, git
+Suggests: texlive-full, pandoc, python3-playwright
+Homepage: https://github.com/henriqueslab/rxiv-maker
+Priority: optional
+Section: science
+Filename: pool/main/r/rxiv-maker/rxiv-maker_1.5.25-1_all.deb
+Size: 10460
+SHA256: 311fce0364bb7bd050f2922c8d46f5fd7d70fa82ae8116a1399d0e9b8d74de43
+SHA1: 0f76aa762939af8e1d9c7cddc99ce6f2fceb62d2
+MD5sum: 25e0d0b22fa25d19efa230dd6ce20588
+Description: Automated LaTeX article generation with modern CLI
+ Rxiv-Maker is a comprehensive tool for automated LaTeX article generation
+ with modern CLI and figure creation capabilities. It streamlines the process
+ of creating scientific manuscripts by:
+ .
+  * Converting Markdown to LaTeX with advanced formatting
+  * Automatic figure generation from Python/R scripts
+  * DOI validation and bibliography management
+  * Cross-platform compatibility (Docker/Podman support)
+  * Modern CLI with rich output formatting
+  * Comprehensive validation and error handling
+ .
+ The tool supports multiple workflows including local development,
+ containerized execution, and integration with CI/CD pipelines.
+ Perfect for researchers, academics, and anyone who needs to generate
+ high-quality scientific documents efficiently.
+
