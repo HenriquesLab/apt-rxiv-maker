@@ -9,7 +9,7 @@ This comprehensive guide helps Ubuntu and Debian users install, update, and mana
 ```bash
 # Add repository and install in one command block
 curl -fsSL https://raw.githubusercontent.com/henriqueslab/rxiv-maker/apt-repo/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/rxiv-maker.gpg && \
-echo "deb [arch=amd64] https://raw.githubusercontent.com/henriqueslab/rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list && \
+echo "deb [signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list && \
 sudo apt update && sudo apt install rxiv-maker
 ```
 
@@ -49,14 +49,25 @@ curl -fsSL https://raw.githubusercontent.com/henriqueslab/rxiv-maker/apt-repo/pu
 Add the rxiv-maker repository to your system's package sources:
 
 ```bash
-echo "deb [arch=amd64] https://raw.githubusercontent.com/henriqueslab/rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
+# Recommended: Auto-detect architecture
+echo "deb [signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
+
+# Alternative: Architecture-specific installation
+# For AMD64 (Intel/AMD 64-bit):
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
+
+# For ARM64 (Apple Silicon, ARM servers):
+echo "deb [arch=arm64 signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
+
+# Check your system architecture:
+dpkg --print-architecture
 ```
 
 **Repository details:**
 - **URL**: `https://raw.githubusercontent.com/henriqueslab/rxiv-maker/apt-repo`
 - **Distribution**: `stable`
 - **Component**: `main`
-- **Architecture**: `amd64`
+- **Architectures**: `amd64`, `arm64`, `all`
 
 ### Step 3: Update Package Lists
 
@@ -69,8 +80,9 @@ sudo apt update
 **Expected output:**
 ```
 Hit:1 http://archive.ubuntu.com/ubuntu jammy InRelease
-Get:2 https://raw.githubusercontent.com/henriqueslab/rxiv-maker/apt-repo stable InRelease [1,234 B]
-Get:3 https://raw.githubusercontent.com/henriqueslab/rxiv-maker/apt-repo stable/main amd64 Packages [567 B]
+Get:2 https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable InRelease [1,234 B]
+Get:3 https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable/main amd64 Packages [567 B]
+Get:4 https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable/main arm64 Packages [567 B]
 Reading package lists... Done
 ```
 

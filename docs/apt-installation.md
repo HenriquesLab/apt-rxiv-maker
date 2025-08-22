@@ -8,8 +8,8 @@ The rxiv-maker project provides an official APT repository for easy installation
 # Add GPG key
 curl -fsSL https://raw.githubusercontent.com/henriqueslab/rxiv-maker/apt-repo/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/rxiv-maker.gpg
 
-# Add repository
-echo "deb [signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://henriqueslab.github.io/rxiv-maker/ stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
+# Add repository (auto-detects architecture)
+echo "deb [signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
 
 # Update package list and install
 sudo apt update && sudo apt install rxiv-maker
@@ -30,7 +30,43 @@ curl -fsSL https://raw.githubusercontent.com/henriqueslab/rxiv-maker/apt-repo/pu
 Add the rxiv-maker APT repository to your system:
 
 ```bash
-echo "deb [signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://henriqueslab.github.io/rxiv-maker/ stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
+# Recommended: Auto-detect architecture
+echo "deb [signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
+
+# Alternative: Specify architecture explicitly
+# For AMD64 (Intel/AMD 64-bit systems):
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
+
+# For ARM64 (Apple Silicon, ARM servers):
+echo "deb [arch=arm64 signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
+```
+
+**Check your system architecture:**
+```bash
+dpkg --print-architecture
+
+# Get more detailed system information
+uname -m                    # Shows machine type (x86_64, aarch64, etc.)
+lscpu | grep Architecture   # Shows architecture details
+```
+
+**Universal installation script (works on any supported architecture):**
+```bash
+#!/bin/bash
+# Auto-detect architecture and install rxiv-maker
+
+# Add GPG key
+curl -fsSL https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/rxiv-maker.gpg
+
+# Detect architecture and add repository
+ARCH=$(dpkg --print-architecture)
+echo "✅ Detected architecture: $ARCH"
+echo "deb [arch=$ARCH signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
+
+# Install package
+sudo apt update && sudo apt install rxiv-maker
+
+echo "🎉 Installation complete! Run 'rxiv --version' to verify."
 ```
 
 ### 3. Update Package Lists
@@ -105,11 +141,12 @@ sudo apt update && sudo apt upgrade rxiv-maker
 
 ## Repository Details
 
-- **Repository URL**: https://henriqueslab.github.io/rxiv-maker/
+- **Repository URL**: https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo
 - **Distribution**: stable
 - **Component**: main
-- **Architectures**: amd64, arm64, all
+- **Architectures**: amd64, arm64, all (architecture-independent packages)
 - **GPG Key ID**: Available in the repository's `pubkey.gpg` file
+- **Supported Platforms**: Ubuntu 20.04+, Debian 11+, both AMD64 and ARM64
 
 ## Alternative Installation Methods
 
@@ -161,7 +198,8 @@ If the repository is not accessible:
 
 1. Check your internet connection
 2. Verify the repository URL is correct
-3. Try accessing https://henriqueslab.github.io/rxiv-maker/ in your browser
+3. Try accessing https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo in your browser
+4. Ensure your architecture is supported (run `dpkg --print-architecture`)
 
 ### Missing Dependencies
 
@@ -198,6 +236,7 @@ The APT repository is automatically updated when new versions of rxiv-maker are 
 - Installation verification
 
 For the latest packages and updates, visit:
-- Repository: https://henriqueslab.github.io/rxiv-maker/
+- Repository: https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo
 - Releases: https://github.com/henriqueslab/rxiv-maker/releases
 - Documentation: https://github.com/henriqueslab/rxiv-maker#readme
+- APT Repository Issues: https://github.com/HenriquesLab/apt-rxiv-maker/issues

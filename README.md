@@ -12,12 +12,31 @@ This repository serves as a standalone APT repository for `rxiv-maker`, providin
 # Add GPG key
 curl -fsSL https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/rxiv-maker.gpg
 
-# Add APT repository
-echo "deb [arch=amd64 signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
+# Add APT repository (automatically detects architecture)
+echo "deb [signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
 
 # Update package list and install
 sudo apt update
 sudo apt install rxiv-maker
+```
+
+### Architecture-Specific Installation
+
+For most users, the commands above will work automatically. If you need to specify architecture explicitly:
+
+```bash
+# For AMD64 (Intel/AMD 64-bit)
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
+
+# For ARM64 (Apple Silicon, ARM-based systems)
+echo "deb [arch=arm64 signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
+
+# Check your architecture
+dpkg --print-architecture
+
+# Universal script for any architecture
+ARCH=$(dpkg --print-architecture)
+echo "deb [arch=$ARCH signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
 ```
 
 ### Verify Installation

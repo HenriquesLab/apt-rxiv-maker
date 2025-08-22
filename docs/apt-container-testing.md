@@ -114,7 +114,7 @@ apt update
 
 # Add rxiv-maker repository
 curl -fsSL https://raw.githubusercontent.com/henriqueslab/rxiv-maker/apt-repo/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/rxiv-maker.gpg
-echo "deb [arch=amd64] https://raw.githubusercontent.com/henriqueslab/rxiv-maker/apt-repo stable main" > /etc/apt/sources.list.d/rxiv-maker.list
+echo "deb [signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" > /etc/apt/sources.list.d/rxiv-maker.list
 
 # Install rxiv-maker
 apt update && apt install -y rxiv-maker
@@ -389,14 +389,45 @@ find /usr -name "*rxiv*" -perm /6000
 
 ### Multi-Architecture Testing
 
+The rxiv-maker APT repository supports both AMD64 and ARM64 architectures. Test on both to ensure compatibility.
+
 **AMD64 Testing:**
 ```bash
-podman run --platform linux/amd64 -it ubuntu:22.04
+# Test on AMD64 (Intel/AMD 64-bit)
+podman run --platform linux/amd64 -it ubuntu:22.04 /bin/bash
+
+# Inside container - install and test
+curl -fsSL https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/rxiv-maker.gpg
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" > /etc/apt/sources.list.d/rxiv-maker.list
+apt update && apt install -y rxiv-maker
+rxiv --version
 ```
 
 **ARM64 Testing:**
 ```bash
-podman run --platform linux/arm64 -it ubuntu:22.04
+# Test on ARM64 (Apple Silicon, ARM servers)
+podman run --platform linux/arm64 -it ubuntu:22.04 /bin/bash
+
+# Inside container - install and test
+curl -fsSL https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/rxiv-maker.gpg
+echo "deb [arch=arm64 signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" > /etc/apt/sources.list.d/rxiv-maker.list
+apt update && apt install -y rxiv-maker
+rxiv --version
+```
+
+**Universal Installation (Auto-detect Architecture):**
+```bash
+# This works on both AMD64 and ARM64
+podman run --platform linux/amd64 -it ubuntu:22.04 /bin/bash
+# OR
+podman run --platform linux/arm64 -it ubuntu:22.04 /bin/bash
+
+# Inside container - universal installation
+curl -fsSL https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/rxiv-maker.gpg
+echo "deb [signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" > /etc/apt/sources.list.d/rxiv-maker.list
+apt update && apt install -y rxiv-maker
+dpkg --print-architecture  # Check detected architecture
+rxiv --version
 ```
 
 ## CI/CD Integration

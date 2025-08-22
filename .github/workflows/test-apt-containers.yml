@@ -90,6 +90,7 @@ jobs:
       parallel-jobs: ${{ steps.config.outputs.parallel-jobs }}
       fail-fast: ${{ steps.config.outputs.fail-fast }}
       skip-repo-validation: ${{ steps.config.outputs.skip-repo-validation }}
+      comprehensive-testing: ${{ steps.config.outputs.comprehensive-testing }}
 
     steps:
       - name: Checkout repository
@@ -116,6 +117,10 @@ jobs:
           if [[ "${{ github.event_name }}" == "schedule" ]]; then
             TEST_TYPES="comprehensive"
             PARALLEL_JOBS="3"
+            # Enable multi-architecture testing for comprehensive runs
+            echo "comprehensive-testing=true" >> $GITHUB_OUTPUT
+          else
+            echo "comprehensive-testing=false" >> $GITHUB_OUTPUT
           fi
 
           echo "ubuntu-versions=$UBUNTU_VERSIONS" >> $GITHUB_OUTPUT
@@ -259,6 +264,28 @@ jobs:
       matrix:
         ubuntu-version: ['22.04']  # Using primary version for matrix tests
         test-type: ['quick']       # Using quick tests for pull requests
+        architecture: ['amd64']    # Focus on AMD64 for pull requests
+        include:
+          # Add ARM64 testing for comprehensive runs (scheduled/manual)
+          - ubuntu-version: '22.04'
+            test-type: 'installation'
+            architecture: 'arm64'
+          # Additional architectures for comprehensive testing
+          - ubuntu-version: '20.04'
+            test-type: 'installation'  
+            architecture: 'amd64'
+          - ubuntu-version: '24.04'
+            test-type: 'installation'
+            architecture: 'amd64'
+        exclude:
+          # Skip ARM64 for quick tests to save time on pull requests
+          - test-type: 'quick'
+            architecture: 'arm64'
+          # Skip additional Ubuntu versions for quick tests
+          - ubuntu-version: '20.04'
+            test-type: 'quick'
+          - ubuntu-version: '24.04'
+            test-type: 'quick'
       fail-fast: ${{ fromJson(needs.validate-environment.outputs.fail-fast) }}
       max-parallel: ${{ fromJson(needs.validate-environment.outputs.parallel-jobs) }}
 
@@ -286,6 +313,7 @@ jobs:
         id: container-test
         continue-on-error: true
         run: |
+          echo "🧪 Testing on Ubuntu ${{ matrix.ubuntu-version }} (${{ matrix.architecture }})"
           # Check if test script exists
           if [[ ! -f "./scripts/test-apt-container.sh" ]]; then
             echo "❌ Test script not found: ./scripts/test-apt-container.sh"
@@ -299,6 +327,7 @@ jobs:
             "./scripts/test-apt-container.sh"
             "--ubuntu-version" "${{ matrix.ubuntu-version }}"
             "--test-type" "${{ matrix.test-type }}"
+            "--architecture" "${{ matrix.architecture }}"
             "--output" "test-results"
             "--timeout" "${{ env.TEST_TIMEOUT }}"
             "--verbose"
@@ -330,7 +359,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-results-${{ matrix.ubuntu-version }}-${{ matrix.test-type }}
+          name: test-results-${{ matrix.ubuntu-version }}-${{ matrix.test-type }}-${{ matrix.architecture }}
           path: test-results/
           if-no-files-found: ignore
           retention-days: 14
@@ -339,7 +368,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: container-logs-${{ matrix.ubuntu-version }}-${{ matrix.test-type }}
+          name: container-logs-${{ matrix.ubuntu-version }}-${{ matrix.test-type }}-${{ matrix.architecture }}
           path: |
             test-results/**/*.log
             /tmp/podman-*
