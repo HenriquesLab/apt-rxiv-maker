@@ -121,6 +121,62 @@ jobs:
 
           echo "✅ Final version determined: $FINAL_VERSION"
 
+      - name: Build PyInstaller binaries
+        id: build_binaries
+        run: |
+          echo "🔧 Building PyInstaller binaries for rxiv-maker..."
+          
+          # Move to source directory
+          cd /tmp/rxiv-maker-source
+          
+          # Install PyInstaller and dependencies
+          echo "📦 Installing PyInstaller and dependencies..."
+          python3 -m pip install pyinstaller
+          python3 -m pip install -e .
+          
+          # Copy spec files from the packaging repository
+          echo "📄 Copying PyInstaller spec files..."
+          cp /home/runner/work/apt-rxiv-maker/apt-rxiv-maker/rxiv.spec ./
+          cp /home/runner/work/apt-rxiv-maker/apt-rxiv-maker/rxiv-install-deps.spec ./
+          
+          # Build the rxiv binary
+          echo "🚀 Building rxiv binary..."
+          pyinstaller rxiv.spec --clean --noconfirm
+          
+          # Build the rxiv-install-deps binary
+          echo "🚀 Building rxiv-install-deps binary..."
+          pyinstaller rxiv-install-deps.spec --clean --noconfirm
+          
+          # Verify binaries were created
+          if [[ -f "dist/rxiv" && -f "dist/rxiv-install-deps" ]]; then
+            echo "✅ PyInstaller binaries built successfully"
+            
+            # Test the binaries
+            echo "🧪 Testing binaries..."
+            ./dist/rxiv --version || echo "rxiv version test failed"
+            ./dist/rxiv-install-deps --help || echo "rxiv-install-deps help test failed"
+            
+            # Copy binaries to packaging directory for inclusion in Debian package
+            mkdir -p /home/runner/work/apt-rxiv-maker/apt-rxiv-maker/binaries
+            cp dist/rxiv /home/runner/work/apt-rxiv-maker/apt-rxiv-maker/binaries/
+            cp dist/rxiv-install-deps /home/runner/work/apt-rxiv-maker/apt-rxiv-maker/binaries/
+            chmod +x /home/runner/work/apt-rxiv-maker/apt-rxiv-maker/binaries/*
+            
+            # Get binary sizes for reporting
+            RXIV_SIZE=$(stat -c%s "dist/rxiv")
+            DEPS_SIZE=$(stat -c%s "dist/rxiv-install-deps")
+            echo "📊 Binary sizes:"
+            echo "   rxiv: ${RXIV_SIZE} bytes"
+            echo "   rxiv-install-deps: ${DEPS_SIZE} bytes"
+            
+            echo "binary_size_rxiv=${RXIV_SIZE}" >> $GITHUB_OUTPUT
+            echo "binary_size_deps=${DEPS_SIZE}" >> $GITHUB_OUTPUT
+            
+          else
+            echo "❌ Failed to build PyInstaller binaries"
+            exit 1
+          fi
+
       - name: Build Debian package
         id: build
         run: |

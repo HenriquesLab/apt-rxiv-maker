@@ -1,2 +1,5 @@
-# Virtual environment approach - no files to install
-# TeX templates and styles are provided by the cloned repository at /opt/rxiv-maker/repo/
+# PyInstaller binary distribution approach
+# Install the pre-built PyInstaller binaries to /usr/share/rxiv-maker/binaries/
+
+binaries/rxiv usr/share/rxiv-maker/binaries/
+binaries/rxiv-install-deps usr/share/rxiv-maker/binaries/

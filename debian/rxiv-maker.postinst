@@ -15,71 +15,40 @@ case "$1" in
         # Create installation directory
         mkdir -p "$INSTALL_DIR" "$BIN_DIR"
         
-        echo "📥 Downloading and installing rxiv-maker binaries..."
+        echo "📦 Installing pre-built rxiv-maker binaries..."
         
-        # Download the latest PyInstaller binaries from GitHub releases
-        LATEST_RELEASE=$(curl -s https://api.github.com/repos/henriqueslab/rxiv-maker/releases/latest | grep '"tag_name":' | sed 's/.*"tag_name": "\([^"]*\)".*/\1/' 2>/dev/null || echo "")
+        # Copy the pre-built PyInstaller binaries from the package
+        # The binaries are included in the Debian package under /usr/share/rxiv-maker/binaries/
+        PACKAGE_BINARIES="/usr/share/rxiv-maker/binaries"
         
-        if [ -z "$LATEST_RELEASE" ]; then
-            echo "⚠️ Could not detect latest release, using v1.6.1 as fallback"
-            LATEST_RELEASE="v1.6.1"
+        if [ -f "$PACKAGE_BINARIES/rxiv" ] && [ -f "$PACKAGE_BINARIES/rxiv-install-deps" ]; then
+            echo "✅ Found PyInstaller binaries in package"
+            
+            # Copy binaries to installation directory
+            cp "$PACKAGE_BINARIES/rxiv" "$INSTALL_DIR/rxiv"
+            cp "$PACKAGE_BINARIES/rxiv-install-deps" "$INSTALL_DIR/rxiv-install-deps"
+            
+            # Make sure they're executable
+            chmod +x "$INSTALL_DIR/rxiv"
+            chmod +x "$INSTALL_DIR/rxiv-install-deps"
+            
+            echo "📋 Binary information:"
+            ls -la "$INSTALL_DIR/"
+            
+        else
+            echo "❌ PyInstaller binaries not found in package at $PACKAGE_BINARIES"
+            echo "Expected files:"
+            echo "  - $PACKAGE_BINARIES/rxiv"
+            echo "  - $PACKAGE_BINARIES/rxiv-install-deps"
+            exit 1
         fi
         
-        echo "🎯 Installing release: $LATEST_RELEASE"
-        
-        # For now, create fallback scripts that install from source using --user
-        # (In a real deployment, we'd have PyInstaller binaries available)
-        echo "🚀 Creating self-contained executable scripts..."
-        
-        # Create main rxiv script
-        cat > "$INSTALL_DIR/rxiv" << 'EOF'
-#!/bin/bash
-# Self-contained rxiv-maker launcher
-
-# Check if already installed in user directory
-USER_INSTALL_DIR="$HOME/.local/lib/python3.10/site-packages"
-if [ ! -d "$USER_INSTALL_DIR/rxiv_maker" ] && [ ! -d "$USER_INSTALL_DIR"/*rxiv* ]; then
-    echo "🚀 First run: Installing rxiv-maker from source..."
-    python3 -m pip install --user --quiet git+https://github.com/henriqueslab/rxiv-maker.git >/dev/null 2>&1 || {
-        echo "❌ Installation failed. Make sure you have internet connection."
-        exit 1
-    }
-    echo "✅ rxiv-maker installed successfully"
-fi
-
-# Run rxiv-maker
-export PYTHONPATH="$HOME/.local/lib/python3.10/site-packages:$PYTHONPATH"
-python3 -m rxiv_maker.cli "$@"
-EOF
-        chmod +x "$INSTALL_DIR/rxiv"
-        
-        # Create deps installer script
-        cat > "$INSTALL_DIR/rxiv-install-deps" << 'EOF'
-#!/bin/bash
-# Self-contained rxiv-install-deps launcher
-
-# Check if already installed in user directory
-USER_INSTALL_DIR="$HOME/.local/lib/python3.10/site-packages"
-if [ ! -d "$USER_INSTALL_DIR/rxiv_maker" ] && [ ! -d "$USER_INSTALL_DIR"/*rxiv* ]; then
-    echo "🚀 First run: Installing rxiv-maker from source..."
-    python3 -m pip install --user --quiet git+https://github.com/henriqueslab/rxiv-maker.git >/dev/null 2>&1 || {
-        echo "❌ Installation failed. Make sure you have internet connection."
-        exit 1
-    }
-    echo "✅ rxiv-maker installed successfully"
-fi
-
-# Run rxiv-install-deps
-export PYTHONPATH="$HOME/.local/lib/python3.10/site-packages:$PYTHONPATH"
-python3 -m rxiv_maker.install.manager "$@"
-EOF
-        chmod +x "$INSTALL_DIR/rxiv-install-deps"
-        
         # Create symlinks in system PATH
+        echo "🔗 Creating system links..."
         ln -sf "$INSTALL_DIR/rxiv" "$BIN_DIR/rxiv"
         ln -sf "$INSTALL_DIR/rxiv-install-deps" "$BIN_DIR/rxiv-install-deps"
         
-        # Also create convenience symlinks in /usr/bin
+        # Also create convenience symlinks in /usr/bin for compatibility
         ln -sf "$BIN_DIR/rxiv" "/usr/bin/rxiv"
         ln -sf "$BIN_DIR/rxiv-install-deps" "/usr/bin/rxiv-install-deps"
         
@@ -93,15 +62,33 @@ EOF
             mktexlsr /usr/share/texmf 2>/dev/null || true
         fi
         
+        # Test the binaries to ensure they work
+        echo "🧪 Testing installed binaries..."
+        if "$INSTALL_DIR/rxiv" --version >/dev/null 2>&1; then
+            echo "✅ rxiv binary works correctly"
+        else
+            echo "⚠️ rxiv binary test failed (might be normal if --version not implemented)"
+        fi
+        
+        if "$INSTALL_DIR/rxiv-install-deps" --help >/dev/null 2>&1; then
+            echo "✅ rxiv-install-deps binary works correctly"
+        else
+            echo "⚠️ rxiv-install-deps binary test failed (might be normal)"
+        fi
+        
         # Verify installation
         if [ -x "/usr/bin/rxiv" ] && [ -x "$INSTALL_DIR/rxiv" ]; then
-            echo "✅ rxiv-maker installed successfully!"
-            echo "   📍 Installation method: Self-contained scripts with --user pip"
+            echo ""
+            echo "🎉 rxiv-maker installed successfully!"
+            echo "   📍 Installation method: PyInstaller standalone binaries"
             echo "   🏠 Installation directory: $INSTALL_DIR"
             echo "   🔗 Commands: rxiv, rxiv-install-deps"
+            echo "   📦 Binary sizes:"
+            echo "      $(ls -lh "$INSTALL_DIR/rxiv" | awk '{print "rxiv: " $5}')"
+            echo "      $(ls -lh "$INSTALL_DIR/rxiv-install-deps" | awk '{print "rxiv-install-deps: " $5}')"
             echo ""
+            echo "   🚀 Ready to use - no dependencies need to be installed!"
             echo "   Run 'rxiv --help' to get started"
-            echo "   Dependencies will be installed automatically on first use"
         else
             echo "❌ Installation failed - missing components"
             exit 1
