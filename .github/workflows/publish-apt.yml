@@ -134,10 +134,12 @@ jobs:
           python3 -m pip install pyinstaller
           python3 -m pip install -e .
           
-          # Copy spec files from the packaging repository
-          echo "📄 Copying PyInstaller spec files..."
+          # Copy spec files and entry point scripts from the packaging repository
+          echo "📄 Copying PyInstaller spec files and entry scripts..."
           cp /home/runner/work/apt-rxiv-maker/apt-rxiv-maker/rxiv.spec ./
           cp /home/runner/work/apt-rxiv-maker/apt-rxiv-maker/rxiv-install-deps.spec ./
+          cp /home/runner/work/apt-rxiv-maker/apt-rxiv-maker/rxiv_entry.py ./
+          cp /home/runner/work/apt-rxiv-maker/apt-rxiv-maker/rxiv_install_deps_entry.py ./
           
           # Build the rxiv binary
           echo "🚀 Building rxiv binary..."

@@ -59,7 +59,7 @@ datas = []
 binaries = []
 
 a = Analysis(
-    ['src/rxiv_maker/install/manager.py'],  # Entry point for install deps
+    ['rxiv_install_deps_entry.py'],  # Entry point script for install deps
     pathex=[],
     binaries=binaries,
     datas=datas,

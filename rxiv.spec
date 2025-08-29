@@ -93,7 +93,7 @@ datas = [
 binaries = []
 
 a = Analysis(
-    ['src/rxiv_maker/cli/__main__.py'],  # Entry point for the CLI
+    ['rxiv_entry.py'],  # Entry point script for the CLI
     pathex=[],
     binaries=binaries,
     datas=datas,
