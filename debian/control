@@ -12,7 +12,7 @@ Rules-Requires-Root: no
 Package: rxiv-maker
 Architecture: all
 Depends: ${misc:Depends},
-         python3 (>= 3.11),
+         python3 (>= 3.10),
          python3-venv,
          git,
          curl,
@@ -23,7 +23,7 @@ Depends: ${misc:Depends},
          texlive-fonts-extra,
          biber
 Recommends: docker.io | podman,
-            nodejs (>= 16),
+            nodejs (>= 12),
             npm,
             r-base
 Suggests: texlive-full,
