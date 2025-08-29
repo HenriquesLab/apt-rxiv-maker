@@ -40,10 +40,11 @@ override_dh_auto_install:
 		gzip -9 debian/rxiv-maker/usr/share/man/man1/rxiv.1; \
 	fi
 
-override_dh_auto_test:
-	# Skip tests during package build to avoid complex dependencies
-	# Tests are run in CI/CD pipeline
-	@echo "Skipping tests during Debian package build"
+override_dh_python3:
+	# Use custom dependency handling to prevent auto-generation of problematic deps
+	# Only add system packages that actually exist in Ubuntu 22.04
+	dh_python3 --no-guessing-deps
+	# Manually specify the dependencies we want in debian/control
 
 override_dh_installdocs:
 	dh_installdocs
@@ -55,5 +56,7 @@ override_dh_installdocs:
 	find debian/rxiv-maker/usr/share/doc/rxiv-maker/examples -name "*.pdf" -delete
 	find debian/rxiv-maker/usr/share/doc/rxiv-maker/examples -name "output" -type d -exec rm -rf {} + 2>/dev/null || true
 
-# Don't run dh_auto_test as we handle testing separately
 override_dh_auto_test:
+	# Skip tests during package build to avoid complex dependencies
+	# Tests are run in CI/CD pipeline
+	@echo "Skipping tests during Debian package build"

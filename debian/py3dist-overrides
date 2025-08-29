@@ -1,0 +1,12 @@
+# Override automatic Python dependency mapping for packages that we handle via pip
+# Format: python-package-name debian-package-name
+
+# Packages not available in Ubuntu 22.04 repos - handled by pip in postinst
+pypdf 
+rich-click 
+tomli-w 
+crossref-commons 
+platformdirs 
+
+# For packages that exist but are too old, we still want system package with no version constraint
+# The pip installation in postinst will upgrade if needed
