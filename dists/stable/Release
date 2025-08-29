@@ -1,0 +1,53 @@
+Origin: Rxiv-Maker Project
+Label: Rxiv-Maker APT Repository
+Suite: stable
+Codename: stable
+Date: Fri, 29 Aug 2025 16:35:30 UTC
+Architectures: amd64 arm64
+Components: main
+Description: APT repository for rxiv-maker - Automated LaTeX article generation
+MD5Sum:
+ 0eb30919f53f9e4290e2a8ea4859e943 1495 main/binary-amd64/Packages
+ d4fbc6aeb6424413560d09f5e6c99118 870 main/binary-amd64/Packages.gz
+ ecce324b3bb9fd239477f284c8544b7f 950 main/binary-amd64/Packages.bz2
+ 080481c06ae4c9359f432287b552edae 192 main/binary-amd64/Release
+ 0eb30919f53f9e4290e2a8ea4859e943 1495 main/binary-arm64/Packages
+ d4fbc6aeb6424413560d09f5e6c99118 870 main/binary-arm64/Packages.gz
+ ecce324b3bb9fd239477f284c8544b7f 950 main/binary-arm64/Packages.bz2
+ 03224d320fd1b86eb70db5bac75fe3b9 192 main/binary-arm64/Release
+ c395089e8f82566022a68b150023619f 243 main/Contents-amd64
+ 2e4d5cfbac81a0e339f89f993ad59652 112 main/Contents-amd64.gz
+ fb308c56434f2468b6ef477d064204a7 146 main/Contents-amd64.bz2
+ c395089e8f82566022a68b150023619f 243 main/Contents-arm64
+ 2e4d5cfbac81a0e339f89f993ad59652 112 main/Contents-arm64.gz
+ fb308c56434f2468b6ef477d064204a7 146 main/Contents-arm64.bz2
+SHA1:
+ e08aafa85e3ae7ea313459a24f9eb72b09c05ea8 1495 main/binary-amd64/Packages
+ be5d4c6c490d80738ec70c6d5b460e57c59c1a72 870 main/binary-amd64/Packages.gz
+ eda44ed4ae78ff52d8457be812043b140d8760b5 950 main/binary-amd64/Packages.bz2
+ d8260142b8ebd9158f847143c819fb477c13475d 192 main/binary-amd64/Release
+ e08aafa85e3ae7ea313459a24f9eb72b09c05ea8 1495 main/binary-arm64/Packages
+ be5d4c6c490d80738ec70c6d5b460e57c59c1a72 870 main/binary-arm64/Packages.gz
+ eda44ed4ae78ff52d8457be812043b140d8760b5 950 main/binary-arm64/Packages.bz2
+ dd5ab47f4b61831bd1ef7031145f0c9623be100a 192 main/binary-arm64/Release
+ 8ff16311cacba63810e0b1f1304bb588c3caaac3 243 main/Contents-amd64
+ b0360151b639c7a1901f193dac02f7121b998b6d 112 main/Contents-amd64.gz
+ 62b0e2f744587ed814d57488e8f42a8aa81acf17 146 main/Contents-amd64.bz2
+ 8ff16311cacba63810e0b1f1304bb588c3caaac3 243 main/Contents-arm64
+ b0360151b639c7a1901f193dac02f7121b998b6d 112 main/Contents-arm64.gz
+ 62b0e2f744587ed814d57488e8f42a8aa81acf17 146 main/Contents-arm64.bz2
+SHA256:
+ 9cf365cbf0d080b5d274eb59d34be63ae288061b217cd0ff49d8fe903a6cd513 1495 main/binary-amd64/Packages
+ a42ebf30323c057437d560acc9a8c587e6c6ba05a45ebb191349fae36071e79c 870 main/binary-amd64/Packages.gz
+ b1136cd052a8ad0970d0a930c47713810aad351f3a5337dbab2cc9af8633138d 950 main/binary-amd64/Packages.bz2
+ 6be0e657abd59183d2502a569b7cfdfc25518a188746a00654220b1898b0f325 192 main/binary-amd64/Release
+ 9cf365cbf0d080b5d274eb59d34be63ae288061b217cd0ff49d8fe903a6cd513 1495 main/binary-arm64/Packages
+ a42ebf30323c057437d560acc9a8c587e6c6ba05a45ebb191349fae36071e79c 870 main/binary-arm64/Packages.gz
+ b1136cd052a8ad0970d0a930c47713810aad351f3a5337dbab2cc9af8633138d 950 main/binary-arm64/Packages.bz2
+ 6703879a23c6731b2ba283e10f7d807d98a2244c124cb14ebdc2994aabd83b68 192 main/binary-arm64/Release
+ 173e7b7db66e534218e12210791d30a7950d5e6339613a2daa6d348a4403257f 243 main/Contents-amd64
+ 9eea534eef835de8654ea0885d36ee5b1f242feab5b3a9d0a9e563a5e61c6b65 112 main/Contents-amd64.gz
+ 36d4d9d2b6518387b9aa18cab3823e4a13965d79a8ce911dc6fe6dc74a66e849 146 main/Contents-amd64.bz2
+ 173e7b7db66e534218e12210791d30a7950d5e6339613a2daa6d348a4403257f 243 main/Contents-arm64
+ 9eea534eef835de8654ea0885d36ee5b1f242feab5b3a9d0a9e563a5e61c6b65 112 main/Contents-arm64.gz
+ 36d4d9d2b6518387b9aa18cab3823e4a13965d79a8ce911dc6fe6dc74a66e849 146 main/Contents-arm64.bz2

@@ -1,0 +1,6 @@
+Archive: stable
+Component: main
+Origin: Rxiv-Maker Project
+Label: Rxiv-Maker APT Repository
+Architecture: arm64
+Description: APT repository for rxiv-maker - Automated LaTeX article generation

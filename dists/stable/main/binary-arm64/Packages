@@ -1,0 +1,33 @@
+Package: rxiv-maker
+Version: 1.6.1-1
+Architecture: all
+Maintainer: Ricardo Henriques <ricardo@henriqueslab.org>
+Installed-Size: 22
+Depends: git, curl, texlive-latex-base, texlive-latex-extra, texlive-fonts-recommended, texlive-science, texlive-fonts-extra, biber
+Recommends: docker.io | podman, nodejs (>= 12), npm, r-base
+Suggests: texlive-full, pandoc
+Homepage: https://github.com/henriqueslab/rxiv-maker
+Priority: optional
+Section: science
+Filename: pool/main/r/rxiv-maker/rxiv-maker_1.6.1-1_all.deb
+Size: 7348
+SHA256: aa9c989f3cb3679d290a4a2961bce23809ce67b76a724237ea9656f4be6e6afa
+SHA1: aacdf85dab76c33590623619c5dd97c7ad5db608
+MD5sum: 49154c2e424387c9d90ab4746c932ece
+Description: Automated LaTeX article generation with modern CLI
+ Rxiv-Maker is a comprehensive tool for automated LaTeX article generation
+ with modern CLI and figure creation capabilities. It streamlines the process
+ of creating scientific manuscripts by:
+ .
+  * Converting Markdown to LaTeX with advanced formatting
+  * Automatic figure generation from Python/R scripts
+  * DOI validation and bibliography management
+  * Cross-platform compatibility (Docker/Podman support)
+  * Modern CLI with rich output formatting
+  * Comprehensive validation and error handling
+ .
+ The tool supports multiple workflows including local development,
+ containerized execution, and integration with CI/CD pipelines.
+ Perfect for researchers, academics, and anyone who needs to generate
+ high-quality scientific documents efficiently.
+
