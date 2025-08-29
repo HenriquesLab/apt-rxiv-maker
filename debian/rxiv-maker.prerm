@@ -1,44 +1,41 @@
 #!/bin/bash
 # prerm script for rxiv-maker
 #
-# pipx cleanup
+# Self-contained binary cleanup
 
 set -e
 
-WRAPPER_SCRIPT="/usr/bin/rxiv"
-WRAPPER_INSTALL_DEPS="/usr/bin/rxiv-install-deps"
-PIPX_HOME="/opt/pipx"
+INSTALL_DIR="/opt/rxiv-maker"
 
 case "$1" in
     remove)
-        echo "🧹 Cleaning up rxiv-maker pipx installation..."
+        echo "🧹 Cleaning up rxiv-maker installation..."
         
-        # Remove wrapper scripts
-        if [ -f "$WRAPPER_SCRIPT" ]; then
-            rm -f "$WRAPPER_SCRIPT"
-            echo "   Removed wrapper script: $WRAPPER_SCRIPT"
+        # Remove system symlinks
+        if [ -L "/usr/bin/rxiv" ]; then
+            rm -f "/usr/bin/rxiv"
+            echo "   Removed symlink: /usr/bin/rxiv"
         fi
         
-        if [ -f "$WRAPPER_INSTALL_DEPS" ]; then
-            rm -f "$WRAPPER_INSTALL_DEPS" 
-            echo "   Removed wrapper script: $WRAPPER_INSTALL_DEPS"
+        if [ -L "/usr/bin/rxiv-install-deps" ]; then
+            rm -f "/usr/bin/rxiv-install-deps"
+            echo "   Removed symlink: /usr/bin/rxiv-install-deps"
         fi
         
-        # Remove rxiv-maker from pipx
-        if command -v pipx >/dev/null 2>&1; then
-            export PIPX_HOME="$PIPX_HOME"
-            export PIPX_BIN_DIR="/usr/local/bin"
-            
-            if pipx list | grep -q rxiv-maker 2>/dev/null; then
-                PIPX_HOME="$PIPX_HOME" PIPX_BIN_DIR="/usr/local/bin" pipx uninstall rxiv-maker 2>/dev/null || true
-                echo "   Removed rxiv-maker from pipx"
-            fi
+        if [ -L "/usr/local/bin/rxiv" ]; then
+            rm -f "/usr/local/bin/rxiv"
+            echo "   Removed symlink: /usr/local/bin/rxiv"
         fi
         
-        # Remove pipx installation directory
-        if [ -d "$PIPX_HOME" ]; then
-            rm -rf "$PIPX_HOME"
-            echo "   Removed pipx installation directory: $PIPX_HOME"
+        if [ -L "/usr/local/bin/rxiv-install-deps" ]; then
+            rm -f "/usr/local/bin/rxiv-install-deps"
+            echo "   Removed symlink: /usr/local/bin/rxiv-install-deps"
+        fi
+        
+        # Remove installation directory
+        if [ -d "$INSTALL_DIR" ]; then
+            rm -rf "$INSTALL_DIR"
+            echo "   Removed installation directory: $INSTALL_DIR"
         fi
         
         # Clean up any temporary files or caches
@@ -47,10 +44,11 @@ case "$1" in
             echo "   Cleaned up temporary cache"
         fi
 
-        # Note: We don't remove user caches in ~/.cache/rxiv-maker
-        # as those might contain valuable user data
+        # Note: We don't remove user installations in ~/.local/
+        # as those might be used independently and contain valuable user data
         
         echo "✅ rxiv-maker cleanup completed"
+        echo "   Note: User-installed dependencies in ~/.local/ are preserved"
     ;;
     
     upgrade|deconfigure)

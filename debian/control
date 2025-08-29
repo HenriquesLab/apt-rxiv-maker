@@ -12,8 +12,6 @@ Rules-Requires-Root: no
 Package: rxiv-maker
 Architecture: all
 Depends: ${misc:Depends},
-         python3 (>= 3.10),
-         pipx,
          git,
          curl,
          texlive-latex-base,

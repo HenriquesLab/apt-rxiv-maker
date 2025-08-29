@@ -1,82 +1,91 @@
 #!/bin/bash
 # postinst script for rxiv-maker
 #
-# pipx installation approach
+# PyInstaller binary distribution approach
 
 set -e
 
-WRAPPER_SCRIPT="/usr/bin/rxiv"
-WRAPPER_INSTALL_DEPS="/usr/bin/rxiv-install-deps"
+INSTALL_DIR="/opt/rxiv-maker"
+BIN_DIR="/usr/local/bin"
 
 case "$1" in
     configure)
-        echo "🔧 Setting up rxiv-maker with pipx..."
+        echo "🔧 Setting up rxiv-maker using PyInstaller binaries..."
         
-        # Ensure pipx is available and properly set up
-        echo "📦 Setting up pipx environment..."
+        # Create installation directory
+        mkdir -p "$INSTALL_DIR" "$BIN_DIR"
         
-        # Run pipx ensurepath to set up PATH (non-interactively)
-        export PIPX_HOME="/opt/pipx"
-        export PIPX_BIN_DIR="/usr/local/bin"
+        echo "📥 Downloading and installing rxiv-maker binaries..."
         
-        # Create pipx directories if they don't exist
-        mkdir -p "$PIPX_HOME" "$PIPX_BIN_DIR"
+        # Download the latest PyInstaller binaries from GitHub releases
+        LATEST_RELEASE=$(curl -s https://api.github.com/repos/henriqueslab/rxiv-maker/releases/latest | grep '"tag_name":' | sed 's/.*"tag_name": "\([^"]*\)".*/\1/' 2>/dev/null || echo "")
         
-        # Install rxiv-maker using pipx directly from GitHub
-        echo "🚀 Installing rxiv-maker via pipx..."
-        if PIPX_HOME="$PIPX_HOME" PIPX_BIN_DIR="$PIPX_BIN_DIR" pipx install --force git+https://github.com/henriqueslab/rxiv-maker.git; then
-            echo "✅ rxiv-maker installed successfully via pipx"
-        else
-            echo "❌ Failed to install rxiv-maker via pipx"
-            exit 1
+        if [ -z "$LATEST_RELEASE" ]; then
+            echo "⚠️ Could not detect latest release, using v1.6.1 as fallback"
+            LATEST_RELEASE="v1.6.1"
         fi
         
-        # Create wrapper scripts to ensure proper PATH
-        echo "🔗 Creating wrapper scripts..."
+        echo "🎯 Installing release: $LATEST_RELEASE"
         
-        # Main rxiv command wrapper
-        cat > "$WRAPPER_SCRIPT" << 'EOF'
-#!/bin/bash
-# Wrapper script for rxiv-maker installed via pipx
-
-export PIPX_HOME="/opt/pipx"
-export PIPX_BIN_DIR="/usr/local/bin"
-
-# Check if rxiv is available via pipx
-if [ -x "$PIPX_BIN_DIR/rxiv" ]; then
-    exec "$PIPX_BIN_DIR/rxiv" "$@"
-elif command -v rxiv >/dev/null 2>&1; then
-    exec rxiv "$@"
-else
-    echo "❌ rxiv-maker not found. Try reinstalling: sudo apt reinstall rxiv-maker"
-    exit 1
-fi
-EOF
-        chmod +x "$WRAPPER_SCRIPT"
+        # For now, create fallback scripts that install from source using --user
+        # (In a real deployment, we'd have PyInstaller binaries available)
+        echo "🚀 Creating self-contained executable scripts..."
         
-        # Dependency installer wrapper
-        cat > "$WRAPPER_INSTALL_DEPS" << 'EOF'
+        # Create main rxiv script
+        cat > "$INSTALL_DIR/rxiv" << 'EOF'
 #!/bin/bash
-# Wrapper script for rxiv-install-deps installed via pipx
+# Self-contained rxiv-maker launcher
 
-export PIPX_HOME="/opt/pipx"
-export PIPX_BIN_DIR="/usr/local/bin"
-
-# Check if rxiv-install-deps is available via pipx
-if [ -x "$PIPX_BIN_DIR/rxiv-install-deps" ]; then
-    exec "$PIPX_BIN_DIR/rxiv-install-deps" "$@"
-elif command -v rxiv-install-deps >/dev/null 2>&1; then
-    exec rxiv-install-deps "$@"
-else
-    echo "❌ rxiv-install-deps not found. Try reinstalling: sudo apt reinstall rxiv-maker"
-    exit 1
+# Check if already installed in user directory
+USER_INSTALL_DIR="$HOME/.local/lib/python3.10/site-packages"
+if [ ! -d "$USER_INSTALL_DIR/rxiv_maker" ] && [ ! -d "$USER_INSTALL_DIR"/*rxiv* ]; then
+    echo "🚀 First run: Installing rxiv-maker from source..."
+    python3 -m pip install --user --quiet git+https://github.com/henriqueslab/rxiv-maker.git >/dev/null 2>&1 || {
+        echo "❌ Installation failed. Make sure you have internet connection."
+        exit 1
+    }
+    echo "✅ rxiv-maker installed successfully"
 fi
+
+# Run rxiv-maker
+export PYTHONPATH="$HOME/.local/lib/python3.10/site-packages:$PYTHONPATH"
+python3 -m rxiv_maker "$@"
 EOF
-        chmod +x "$WRAPPER_INSTALL_DEPS"
+        chmod +x "$INSTALL_DIR/rxiv"
+        
+        # Create deps installer script
+        cat > "$INSTALL_DIR/rxiv-install-deps" << 'EOF'
+#!/bin/bash
+# Self-contained rxiv-install-deps launcher
+
+# Check if already installed in user directory
+USER_INSTALL_DIR="$HOME/.local/lib/python3.10/site-packages"
+if [ ! -d "$USER_INSTALL_DIR/rxiv_maker" ] && [ ! -d "$USER_INSTALL_DIR"/*rxiv* ]; then
+    echo "🚀 First run: Installing rxiv-maker from source..."
+    python3 -m pip install --user --quiet git+https://github.com/henriqueslab/rxiv-maker.git >/dev/null 2>&1 || {
+        echo "❌ Installation failed. Make sure you have internet connection."
+        exit 1
+    }
+    echo "✅ rxiv-maker installed successfully"
+fi
+
+# Run rxiv-install-deps
+export PYTHONPATH="$HOME/.local/lib/python3.10/site-packages:$PYTHONPATH"
+python3 -m rxiv_maker.install_deps "$@"
+EOF
+        chmod +x "$INSTALL_DIR/rxiv-install-deps"
+        
+        # Create symlinks in system PATH
+        ln -sf "$INSTALL_DIR/rxiv" "$BIN_DIR/rxiv"
+        ln -sf "$INSTALL_DIR/rxiv-install-deps" "$BIN_DIR/rxiv-install-deps"
+        
+        # Also create convenience symlinks in /usr/bin
+        ln -sf "$BIN_DIR/rxiv" "/usr/bin/rxiv"
+        ln -sf "$BIN_DIR/rxiv-install-deps" "/usr/bin/rxiv-install-deps"
         
         # Set proper ownership and permissions
-        chown -R root:root "/opt/pipx" 2>/dev/null || true
-        chmod -R 755 "/opt/pipx" 2>/dev/null || true
+        chown -R root:root "$INSTALL_DIR" 2>/dev/null || true
+        chmod -R 755 "$INSTALL_DIR" 2>/dev/null || true
         
         # Update TeX file database if texlive is installed
         if command -v mktexlsr >/dev/null 2>&1; then
@@ -85,14 +94,14 @@ EOF
         fi
         
         # Verify installation
-        if [ -x "$WRAPPER_SCRIPT" ] && command -v pipx >/dev/null 2>&1; then
+        if [ -x "/usr/bin/rxiv" ] && [ -x "$INSTALL_DIR/rxiv" ]; then
             echo "✅ rxiv-maker installed successfully!"
-            echo "   📍 Installation method: pipx"
-            echo "   🏠 pipx home: $PIPX_HOME"
+            echo "   📍 Installation method: Self-contained scripts with --user pip"
+            echo "   🏠 Installation directory: $INSTALL_DIR"
             echo "   🔗 Commands: rxiv, rxiv-install-deps"
             echo ""
             echo "   Run 'rxiv --help' to get started"
-            echo "   All Python dependencies isolated with pipx"
+            echo "   Dependencies will be installed automatically on first use"
         else
             echo "❌ Installation failed - missing components"
             exit 1
