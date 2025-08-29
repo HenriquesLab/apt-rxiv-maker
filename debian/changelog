@@ -1,3 +1,14 @@
+rxiv-maker (1.6.2-1) stable; urgency=medium
+
+  * Fix Google Colab compatibility - handle ensurepip failures
+  * Improve virtual environment creation in restricted environments
+  * Add fallback pip installation via get-pip.py
+  * Enhanced error handling for uv installation
+  * Support Python 3.10+ for Ubuntu 22.04 compatibility
+  * Robust dependency installation with multiple fallback methods
+
+ -- Ricardo Henriques <ricardo@henriqueslab.org>  Thu, 29 Aug 2025 15:30:00 +0000
+
 rxiv-maker (1.5.18-1) stable; urgency=medium
 
   * Fix Ubuntu 24.04 dependency compatibility
