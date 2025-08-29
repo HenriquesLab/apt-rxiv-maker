@@ -1,146 +1,82 @@
 #!/bin/bash
 # postinst script for rxiv-maker
 #
-# Virtual environment installation approach
+# pipx installation approach
 
 set -e
 
-INSTALL_DIR="/opt/rxiv-maker"
-VENV_DIR="$INSTALL_DIR/venv"
-REPO_DIR="$INSTALL_DIR/repo" 
 WRAPPER_SCRIPT="/usr/bin/rxiv"
 WRAPPER_INSTALL_DEPS="/usr/bin/rxiv-install-deps"
 
 case "$1" in
     configure)
-        echo "🔧 Setting up rxiv-maker virtual environment..."
+        echo "🔧 Setting up rxiv-maker with pipx..."
         
-        # Create installation directory
-        mkdir -p "$INSTALL_DIR"
+        # Ensure pipx is available and properly set up
+        echo "📦 Setting up pipx environment..."
         
-        # Install uv (fast Python package installer)
-        echo "📦 Installing uv package manager..."
-        if ! command -v uv >/dev/null 2>&1; then
-            if curl -LsSf https://astral.sh/uv/install.sh | sh; then
-                export PATH="$HOME/.cargo/bin:$PATH"
-                echo "✅ uv installed successfully"
-            else
-                echo "⚠️  uv installation failed, will use pip as fallback"
-            fi
+        # Run pipx ensurepath to set up PATH (non-interactively)
+        export PIPX_HOME="/opt/pipx"
+        export PIPX_BIN_DIR="/usr/local/bin"
+        
+        # Create pipx directories if they don't exist
+        mkdir -p "$PIPX_HOME" "$PIPX_BIN_DIR"
+        
+        # Install rxiv-maker using pipx directly from GitHub
+        echo "🚀 Installing rxiv-maker via pipx..."
+        if PIPX_HOME="$PIPX_HOME" PIPX_BIN_DIR="$PIPX_BIN_DIR" pipx install --force git+https://github.com/henriqueslab/rxiv-maker.git; then
+            echo "✅ rxiv-maker installed successfully via pipx"
         else
-            echo "✅ uv already available"
-        fi
-        
-        # Clone the actual rxiv-maker repository
-        echo "📥 Cloning rxiv-maker repository..."
-        if [ -d "$REPO_DIR" ]; then
-            cd "$REPO_DIR"
-            git pull --quiet origin main || echo "⚠️  Failed to update repository"
-        else
-            git clone --quiet https://github.com/henriqueslab/rxiv-maker.git "$REPO_DIR" || {
-                echo "❌ Failed to clone repository"
-                exit 1
-            }
-        fi
-        
-        # Create virtual environment with Python 3.10+
-        echo "🐍 Creating Python virtual environment..."
-        if python3 -m venv "$VENV_DIR" --without-pip; then
-            echo "✅ Virtual environment created without pip bootstrap"
-        elif python3 -m venv "$VENV_DIR"; then
-            echo "✅ Virtual environment created with system pip"
-        else
-            echo "❌ Failed to create virtual environment"
+            echo "❌ Failed to install rxiv-maker via pipx"
             exit 1
         fi
         
-        # Ensure pip is available in virtual environment
-        echo "🔧 Setting up pip in virtual environment..."
-        if ! "$VENV_DIR/bin/python" -m pip --version >/dev/null 2>&1; then
-            echo "📦 Installing pip manually..."
-            # Download get-pip.py as fallback for restricted environments
-            if command -v curl >/dev/null 2>&1; then
-                curl -s https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
-                "$VENV_DIR/bin/python" /tmp/get-pip.py
-                rm -f /tmp/get-pip.py
-            elif command -v wget >/dev/null 2>&1; then
-                wget -q https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
-                "$VENV_DIR/bin/python" /tmp/get-pip.py
-                rm -f /tmp/get-pip.py
-            else
-                echo "❌ Cannot download pip installer"
-                exit 1
-            fi
-        fi
+        # Create wrapper scripts to ensure proper PATH
+        echo "🔗 Creating wrapper scripts..."
         
-        # Install dependencies using uv in virtual environment
-        echo "📦 Installing Python dependencies..."
-        cd "$REPO_DIR"
-        if command -v uv >/dev/null 2>&1; then
-            echo "🚀 Using uv for fast installation..."
-            if "$VENV_DIR/bin/python" -m pip install uv >/dev/null 2>&1; then
-                if "$VENV_DIR/bin/uv" pip install -e . >/dev/null 2>&1; then
-                    echo "✅ Dependencies installed successfully with uv"
-                else
-                    echo "⚠️  uv installation failed, falling back to pip..."
-                    "$VENV_DIR/bin/pip" install --upgrade pip >/dev/null 2>&1
-                    "$VENV_DIR/bin/pip" install -e .
-                fi
-            else
-                echo "⚠️  uv setup failed, using pip..."
-                "$VENV_DIR/bin/pip" install --upgrade pip >/dev/null 2>&1
-                "$VENV_DIR/bin/pip" install -e .
-            fi
-        else
-            echo "🐍 Using pip for installation..."
-            "$VENV_DIR/bin/pip" install --upgrade pip >/dev/null 2>&1
-            "$VENV_DIR/bin/pip" install -e .
-        fi
-        
-        # Create wrapper script for rxiv command
-        echo "🔗 Creating wrapper script..."
+        # Main rxiv command wrapper
         cat > "$WRAPPER_SCRIPT" << 'EOF'
 #!/bin/bash
-# Wrapper script for rxiv-maker
+# Wrapper script for rxiv-maker installed via pipx
 
-INSTALL_DIR="/opt/rxiv-maker"
-VENV_DIR="$INSTALL_DIR/venv"
+export PIPX_HOME="/opt/pipx"
+export PIPX_BIN_DIR="/usr/local/bin"
 
-# Check if virtual environment exists
-if [ ! -d "$VENV_DIR" ]; then
-    echo "❌ rxiv-maker virtual environment not found at $VENV_DIR"
-    echo "   Try reinstalling the package: sudo apt reinstall rxiv-maker"
+# Check if rxiv is available via pipx
+if [ -x "$PIPX_BIN_DIR/rxiv" ]; then
+    exec "$PIPX_BIN_DIR/rxiv" "$@"
+elif command -v rxiv >/dev/null 2>&1; then
+    exec rxiv "$@"
+else
+    echo "❌ rxiv-maker not found. Try reinstalling: sudo apt reinstall rxiv-maker"
     exit 1
 fi
-
-# Activate virtual environment and run rxiv
-exec "$VENV_DIR/bin/python" "$VENV_DIR/bin/rxiv" "$@"
 EOF
         chmod +x "$WRAPPER_SCRIPT"
         
-        # Create wrapper script for dependency installer
+        # Dependency installer wrapper
         cat > "$WRAPPER_INSTALL_DEPS" << 'EOF'
 #!/bin/bash
-# Wrapper script for rxiv-install-deps
+# Wrapper script for rxiv-install-deps installed via pipx
 
-INSTALL_DIR="/opt/rxiv-maker"
-VENV_DIR="$INSTALL_DIR/venv"
+export PIPX_HOME="/opt/pipx"
+export PIPX_BIN_DIR="/usr/local/bin"
 
-# Check if virtual environment exists
-if [ ! -d "$VENV_DIR" ]; then
-    echo "❌ rxiv-maker virtual environment not found at $VENV_DIR"
-    echo "   Try reinstalling the package: sudo apt reinstall rxiv-maker"
+# Check if rxiv-install-deps is available via pipx
+if [ -x "$PIPX_BIN_DIR/rxiv-install-deps" ]; then
+    exec "$PIPX_BIN_DIR/rxiv-install-deps" "$@"
+elif command -v rxiv-install-deps >/dev/null 2>&1; then
+    exec rxiv-install-deps "$@"
+else
+    echo "❌ rxiv-install-deps not found. Try reinstalling: sudo apt reinstall rxiv-maker"
     exit 1
 fi
-
-# Activate virtual environment and run rxiv-install-deps
-exec "$VENV_DIR/bin/python" "$VENV_DIR/bin/rxiv-install-deps" "$@"
 EOF
         chmod +x "$WRAPPER_INSTALL_DEPS"
         
         # Set proper ownership and permissions
-        chown -R root:root "$INSTALL_DIR"
-        chmod -R 755 "$INSTALL_DIR"
+        chown -R root:root "/opt/pipx" 2>/dev/null || true
+        chmod -R 755 "/opt/pipx" 2>/dev/null || true
         
         # Update TeX file database if texlive is installed
         if command -v mktexlsr >/dev/null 2>&1; then
@@ -149,14 +85,14 @@ EOF
         fi
         
         # Verify installation
-        if [ -x "$WRAPPER_SCRIPT" ] && [ -d "$VENV_DIR" ]; then
+        if [ -x "$WRAPPER_SCRIPT" ] && command -v pipx >/dev/null 2>&1; then
             echo "✅ rxiv-maker installed successfully!"
-            echo "   📍 Installation directory: $INSTALL_DIR"
-            echo "   🐍 Virtual environment: $VENV_DIR"
-            echo "   🔗 Command: rxiv (wrapper script)"
+            echo "   📍 Installation method: pipx"
+            echo "   🏠 pipx home: $PIPX_HOME"
+            echo "   🔗 Commands: rxiv, rxiv-install-deps"
             echo ""
             echo "   Run 'rxiv --help' to get started"
-            echo "   All Python dependencies isolated in virtual environment"
+            echo "   All Python dependencies isolated with pipx"
         else
             echo "❌ Installation failed - missing components"
             exit 1

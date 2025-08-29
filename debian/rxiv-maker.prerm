@@ -1,17 +1,17 @@
 #!/bin/bash
 # prerm script for rxiv-maker
 #
-# Virtual environment cleanup
+# pipx cleanup
 
 set -e
 
-INSTALL_DIR="/opt/rxiv-maker"
 WRAPPER_SCRIPT="/usr/bin/rxiv"
 WRAPPER_INSTALL_DEPS="/usr/bin/rxiv-install-deps"
+PIPX_HOME="/opt/pipx"
 
 case "$1" in
     remove)
-        echo "🧹 Cleaning up rxiv-maker virtual environment..."
+        echo "🧹 Cleaning up rxiv-maker pipx installation..."
         
         # Remove wrapper scripts
         if [ -f "$WRAPPER_SCRIPT" ]; then
@@ -24,10 +24,21 @@ case "$1" in
             echo "   Removed wrapper script: $WRAPPER_INSTALL_DEPS"
         fi
         
-        # Remove virtual environment and repository
-        if [ -d "$INSTALL_DIR" ]; then
-            rm -rf "$INSTALL_DIR"
-            echo "   Removed installation directory: $INSTALL_DIR"
+        # Remove rxiv-maker from pipx
+        if command -v pipx >/dev/null 2>&1; then
+            export PIPX_HOME="$PIPX_HOME"
+            export PIPX_BIN_DIR="/usr/local/bin"
+            
+            if pipx list | grep -q rxiv-maker 2>/dev/null; then
+                PIPX_HOME="$PIPX_HOME" PIPX_BIN_DIR="/usr/local/bin" pipx uninstall rxiv-maker 2>/dev/null || true
+                echo "   Removed rxiv-maker from pipx"
+            fi
+        fi
+        
+        # Remove pipx installation directory
+        if [ -d "$PIPX_HOME" ]; then
+            rm -rf "$PIPX_HOME"
+            echo "   Removed pipx installation directory: $PIPX_HOME"
         fi
         
         # Clean up any temporary files or caches

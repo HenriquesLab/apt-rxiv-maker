@@ -137,7 +137,7 @@ apt-repo/
 curl -fsSL https://raw.githubusercontent.com/henriqueslab/rxiv-maker/apt-repo/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/rxiv-maker.gpg
 
 # Add repository
-echo "deb [signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://henriqueslab.github.io/rxiv-maker/ stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
+echo "deb [signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rxiv-maker.list
 
 # Install
 sudo apt update && sudo apt install rxiv-maker
