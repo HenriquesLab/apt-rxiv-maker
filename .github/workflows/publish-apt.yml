@@ -77,9 +77,15 @@ jobs:
           version: 'latest'
           enable-cache: true
 
+      - name: Clone rxiv-maker source repository
+        run: |
+          echo "📥 Cloning rxiv-maker source repository for version verification..."
+          git clone https://github.com/henriqueslab/rxiv-maker.git /tmp/rxiv-maker-source
+          echo "✅ Source repository cloned to /tmp/rxiv-maker-source"
+
       - name: Verify version
         run: |
-          PACKAGE_VERSION=$(python -c "exec(open('src/rxiv_maker/__version__.py').read()); print(__version__)")
+          PACKAGE_VERSION=$(python -c "exec(open('/tmp/rxiv-maker-source/src/rxiv_maker/__version__.py').read()); print(__version__)")
           INPUT_VERSION="${{ inputs.version }}"
 
           echo "Package version: $PACKAGE_VERSION"
@@ -104,7 +110,7 @@ jobs:
           CHANGELOG_ENTRY="${CHANGELOG_ENTRY}  * Release version $VERSION\n"
           CHANGELOG_ENTRY="${CHANGELOG_ENTRY}  * See CHANGELOG.md for detailed changes\n"
           CHANGELOG_ENTRY="${CHANGELOG_ENTRY}  * Automated build from GitHub Actions\n\n"
-          CHANGELOG_ENTRY="${CHANGELOG_ENTRY} -- Rxiv-Maker Contributors <rxiv.maker@gmail.com>  $(date -R)\n\n"
+          CHANGELOG_ENTRY="${CHANGELOG_ENTRY} -- Ricardo Henriques <ricardo@henriqueslab.org>  $(date -R)\n\n"
 
           # Packaging files are already in place
 
