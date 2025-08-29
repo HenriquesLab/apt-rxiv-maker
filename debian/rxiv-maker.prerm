@@ -1,47 +1,57 @@
-#!/bin/sh
+#!/bin/bash
 # prerm script for rxiv-maker
 #
-# see: dh_installdeb(1)
+# Virtual environment cleanup
 
 set -e
 
+INSTALL_DIR="/opt/rxiv-maker"
+WRAPPER_SCRIPT="/usr/bin/rxiv"
+WRAPPER_INSTALL_DEPS="/usr/bin/rxiv-install-deps"
+
 case "$1" in
     remove)
-        echo "Cleaning up pip-installed dependencies..."
+        echo "🧹 Cleaning up rxiv-maker virtual environment..."
         
-        # Remove packages that were installed via pip in postinst
-        PIP_PACKAGES="pypdf rich-click tomli-w crossref-commons platformdirs"
+        # Remove wrapper scripts
+        if [ -f "$WRAPPER_SCRIPT" ]; then
+            rm -f "$WRAPPER_SCRIPT"
+            echo "   Removed wrapper script: $WRAPPER_SCRIPT"
+        fi
         
-        # Try to uninstall with pip3 first, fallback to pip
-        # Only attempt if pip is available and packages are user-installed
-        if command -v pip3 >/dev/null 2>&1; then
-            for pkg in $PIP_PACKAGES; do
-                pip3 uninstall -y --user "$pkg" 2>/dev/null || true
-            done
-        elif command -v pip >/dev/null 2>&1; then
-            for pkg in $PIP_PACKAGES; do
-                pip uninstall -y --user "$pkg" 2>/dev/null || true
-            done
+        if [ -f "$WRAPPER_INSTALL_DEPS" ]; then
+            rm -f "$WRAPPER_INSTALL_DEPS" 
+            echo "   Removed wrapper script: $WRAPPER_INSTALL_DEPS"
+        fi
+        
+        # Remove virtual environment and repository
+        if [ -d "$INSTALL_DIR" ]; then
+            rm -rf "$INSTALL_DIR"
+            echo "   Removed installation directory: $INSTALL_DIR"
         fi
         
         # Clean up any temporary files or caches
         if [ -d /tmp/.rxiv-cache ]; then
             rm -rf /tmp/.rxiv-cache 2>/dev/null || true
+            echo "   Cleaned up temporary cache"
         fi
 
         # Note: We don't remove user caches in ~/.cache/rxiv-maker
         # as those might contain valuable user data
+        
+        echo "✅ rxiv-maker cleanup completed"
     ;;
     
     upgrade|deconfigure)
-        # Don't remove pip packages on upgrade, only on full removal
-        # Clean up any temporary files or caches
+        # On upgrade, keep installation but clean temp files
         if [ -d /tmp/.rxiv-cache ]; then
             rm -rf /tmp/.rxiv-cache 2>/dev/null || true
         fi
+        echo "🔄 Preparing for rxiv-maker upgrade..."
     ;;
 
     failed-upgrade)
+        echo "⚠️  rxiv-maker upgrade failed"
     ;;
 
     *)

@@ -1,51 +1,121 @@
-#!/bin/sh
+#!/bin/bash
 # postinst script for rxiv-maker
 #
-# see: dh_installdeb(1)
+# Virtual environment installation approach
 
 set -e
 
+INSTALL_DIR="/opt/rxiv-maker"
+VENV_DIR="$INSTALL_DIR/venv"
+REPO_DIR="$INSTALL_DIR/repo" 
+WRAPPER_SCRIPT="/usr/bin/rxiv"
+WRAPPER_INSTALL_DEPS="/usr/bin/rxiv-install-deps"
+
 case "$1" in
     configure)
-        echo "Installing Python dependencies via pip..."
+        echo "🔧 Setting up rxiv-maker virtual environment..."
         
-        # Install packages not available or too old in system repos
-        PIP_PACKAGES="pypdf>=4.0.0 rich-click tomli-w crossref-commons platformdirs>=4.0.0"
+        # Create installation directory
+        mkdir -p "$INSTALL_DIR"
         
-        # Try to install with pip3 first, fallback to pip
-        if command -v pip3 >/dev/null 2>&1; then
-            pip3 install --user --break-system-packages $PIP_PACKAGES 2>/dev/null || \
-            pip3 install --user $PIP_PACKAGES 2>/dev/null || \
-            echo "⚠️  Failed to install some Python dependencies via pip3"
-        elif command -v pip >/dev/null 2>&1; then
-            pip install --user --break-system-packages $PIP_PACKAGES 2>/dev/null || \
-            pip install --user $PIP_PACKAGES 2>/dev/null || \
-            echo "⚠️  Failed to install some Python dependencies via pip"
-        else
-            echo "⚠️  pip not found - some features may not work properly"
+        # Install uv (fast Python package installer)
+        echo "📦 Installing uv package manager..."
+        if ! command -v uv >/dev/null 2>&1; then
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+            export PATH="$HOME/.cargo/bin:$PATH"
         fi
+        
+        # Clone the actual rxiv-maker repository
+        echo "📥 Cloning rxiv-maker repository..."
+        if [ -d "$REPO_DIR" ]; then
+            cd "$REPO_DIR"
+            git pull --quiet origin main || echo "⚠️  Failed to update repository"
+        else
+            git clone --quiet https://github.com/henriqueslab/rxiv-maker.git "$REPO_DIR" || {
+                echo "❌ Failed to clone repository"
+                exit 1
+            }
+        fi
+        
+        # Create virtual environment with Python 3.11+
+        echo "🐍 Creating Python virtual environment..."
+        python3 -m venv "$VENV_DIR"
+        
+        # Install dependencies using uv in virtual environment
+        echo "📦 Installing Python dependencies with uv..."
+        cd "$REPO_DIR"
+        if command -v uv >/dev/null 2>&1; then
+            "$VENV_DIR/bin/python" -m pip install uv
+            "$VENV_DIR/bin/uv" pip install -e .
+        else
+            # Fallback to pip if uv installation failed
+            "$VENV_DIR/bin/pip" install --upgrade pip
+            "$VENV_DIR/bin/pip" install -e .
+        fi
+        
+        # Create wrapper script for rxiv command
+        echo "🔗 Creating wrapper script..."
+        cat > "$WRAPPER_SCRIPT" << 'EOF'
+#!/bin/bash
+# Wrapper script for rxiv-maker
 
+INSTALL_DIR="/opt/rxiv-maker"
+VENV_DIR="$INSTALL_DIR/venv"
+
+# Check if virtual environment exists
+if [ ! -d "$VENV_DIR" ]; then
+    echo "❌ rxiv-maker virtual environment not found at $VENV_DIR"
+    echo "   Try reinstalling the package: sudo apt reinstall rxiv-maker"
+    exit 1
+fi
+
+# Activate virtual environment and run rxiv
+exec "$VENV_DIR/bin/python" "$VENV_DIR/bin/rxiv" "$@"
+EOF
+        chmod +x "$WRAPPER_SCRIPT"
+        
+        # Create wrapper script for dependency installer
+        cat > "$WRAPPER_INSTALL_DEPS" << 'EOF'
+#!/bin/bash
+# Wrapper script for rxiv-install-deps
+
+INSTALL_DIR="/opt/rxiv-maker"
+VENV_DIR="$INSTALL_DIR/venv"
+
+# Check if virtual environment exists
+if [ ! -d "$VENV_DIR" ]; then
+    echo "❌ rxiv-maker virtual environment not found at $VENV_DIR"
+    echo "   Try reinstalling the package: sudo apt reinstall rxiv-maker"
+    exit 1
+fi
+
+# Activate virtual environment and run rxiv-install-deps
+exec "$VENV_DIR/bin/python" "$VENV_DIR/bin/rxiv-install-deps" "$@"
+EOF
+        chmod +x "$WRAPPER_INSTALL_DEPS"
+        
+        # Set proper ownership and permissions
+        chown -R root:root "$INSTALL_DIR"
+        chmod -R 755 "$INSTALL_DIR"
+        
         # Update TeX file database if texlive is installed
         if command -v mktexlsr >/dev/null 2>&1; then
-            echo "Updating TeX file database..."
+            echo "📚 Updating TeX file database..."
             mktexlsr /usr/share/texmf 2>/dev/null || true
         fi
-
-        # Install playwright browsers if playwright is available and user wants it
-        # (optional, only if RXIV_INSTALL_PLAYWRIGHT environment variable is set)
-        if [ "${RXIV_INSTALL_PLAYWRIGHT:-}" = "1" ] && command -v playwright >/dev/null 2>&1; then
-            echo "Installing Playwright browsers..."
-            su -c "playwright install chromium" $(logname) 2>/dev/null || true
-        fi
-
+        
         # Verify installation
-        if command -v rxiv >/dev/null 2>&1; then
+        if [ -x "$WRAPPER_SCRIPT" ] && [ -d "$VENV_DIR" ]; then
             echo "✅ rxiv-maker installed successfully!"
+            echo "   📍 Installation directory: $INSTALL_DIR"
+            echo "   🐍 Virtual environment: $VENV_DIR"
+            echo "   🔗 Command: rxiv (wrapper script)"
+            echo ""
             echo "   Run 'rxiv --help' to get started"
-            echo "   Note: Some dependencies installed via pip to ensure compatibility"
+            echo "   All Python dependencies isolated in virtual environment"
         else
-            echo "⚠️  Installation completed but 'rxiv' command not found in PATH"
-            echo "   You may need to restart your shell or run 'hash -r'"
+            echo "❌ Installation failed - missing components"
+            exit 1
         fi
     ;;
 
