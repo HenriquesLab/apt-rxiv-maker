@@ -49,7 +49,7 @@ fi
 
 # Run rxiv-maker
 export PYTHONPATH="$HOME/.local/lib/python3.10/site-packages:$PYTHONPATH"
-python3 -m rxiv_maker "$@"
+python3 -m rxiv_maker.cli "$@"
 EOF
         chmod +x "$INSTALL_DIR/rxiv"
         
@@ -71,7 +71,7 @@ fi
 
 # Run rxiv-install-deps
 export PYTHONPATH="$HOME/.local/lib/python3.10/site-packages:$PYTHONPATH"
-python3 -m rxiv_maker.install_deps "$@"
+python3 -m rxiv_maker.install.manager "$@"
 EOF
         chmod +x "$INSTALL_DIR/rxiv-install-deps"
         
