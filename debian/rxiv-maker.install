@@ -1,5 +1,2 @@
-# Install LaTeX style files to system location
-src/tex/style/* usr/share/texmf/tex/latex/rxiv-maker/
-
-# Install template files
-src/tex/template.tex usr/share/rxiv-maker/templates/
+# Virtual environment approach - no files to install
+# TeX templates and styles are provided by the cloned repository at /opt/rxiv-maker/repo/
