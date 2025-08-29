@@ -6,7 +6,24 @@
 set -e
 
 case "$1" in
-    remove|upgrade|deconfigure)
+    remove)
+        echo "Cleaning up pip-installed dependencies..."
+        
+        # Remove packages that were installed via pip in postinst
+        PIP_PACKAGES="pypdf rich-click tomli-w crossref-commons platformdirs"
+        
+        # Try to uninstall with pip3 first, fallback to pip
+        # Only attempt if pip is available and packages are user-installed
+        if command -v pip3 >/dev/null 2>&1; then
+            for pkg in $PIP_PACKAGES; do
+                pip3 uninstall -y --user "$pkg" 2>/dev/null || true
+            done
+        elif command -v pip >/dev/null 2>&1; then
+            for pkg in $PIP_PACKAGES; do
+                pip uninstall -y --user "$pkg" 2>/dev/null || true
+            done
+        fi
+        
         # Clean up any temporary files or caches
         if [ -d /tmp/.rxiv-cache ]; then
             rm -rf /tmp/.rxiv-cache 2>/dev/null || true
@@ -14,6 +31,14 @@ case "$1" in
 
         # Note: We don't remove user caches in ~/.cache/rxiv-maker
         # as those might contain valuable user data
+    ;;
+    
+    upgrade|deconfigure)
+        # Don't remove pip packages on upgrade, only on full removal
+        # Clean up any temporary files or caches
+        if [ -d /tmp/.rxiv-cache ]; then
+            rm -rf /tmp/.rxiv-cache 2>/dev/null || true
+        fi
     ;;
 
     failed-upgrade)

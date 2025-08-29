@@ -158,7 +158,7 @@ get_version() {
 # Update debian/changelog with current version
 update_changelog() {
     local version="$1"
-    local changelog_file="$PROJECT_ROOT/packaging/debian/changelog"
+    local changelog_file="$PROJECT_ROOT/debian/changelog"
     local temp_file=$(mktemp)
 
     log "Updating debian/changelog for version $version"
@@ -213,7 +213,7 @@ prepare_build() {
     # Copy debian packaging files to source root
     log "Setting up debian packaging..."
     rm -rf "$src_dir/debian"
-    cp -r "$PROJECT_ROOT/packaging/debian" "$src_dir/debian"
+    cp -r "$PROJECT_ROOT/debian" "$src_dir/debian"
 
     # Clean up source directory
     cd "$src_dir"

@@ -1,0 +1,35 @@
+FROM ubuntu:22.04
+
+# Install basic requirements
+RUN apt-get update && apt-get install -y \
+    curl \
+    gnupg \
+    software-properties-common \
+    python3 \
+    python3-pip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add the rxiv-maker repository
+RUN curl -fsSL https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/rxiv-maker.gpg
+
+# Add APT repository
+RUN echo "deb [signed-by=/usr/share/keyrings/rxiv-maker.gpg] https://raw.githubusercontent.com/HenriquesLab/apt-rxiv-maker/apt-repo stable main" > /etc/apt/sources.list.d/rxiv-maker.list
+
+# Update package list
+RUN apt-get update
+
+# Show what's available in the repository
+RUN apt-cache policy rxiv-maker
+
+# Try to install rxiv-maker
+RUN apt-get install -y rxiv-maker || echo "Installation failed - expected with current version"
+
+# Verify installation
+RUN rxiv --version || echo "Command not found - expected with current version"
+RUN rxiv --check-deps || echo "Dependencies check failed - expected with current version"
+
+# Create a simple test script
+RUN echo '#!/bin/bash\necho "=== Ubuntu Version ==="\ncat /etc/os-release | grep VERSION\necho "\n=== Python Version ==="\npython3 --version\necho "\n=== Package Status ==="\nrxiv --check-deps\necho "\n=== Available Packages ==="\napt list --installed | grep python3- | head -10' > /test.sh
+RUN chmod +x /test.sh
+
+CMD ["/test.sh"]

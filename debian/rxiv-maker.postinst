@@ -7,6 +7,24 @@ set -e
 
 case "$1" in
     configure)
+        echo "Installing Python dependencies via pip..."
+        
+        # Install packages not available or too old in system repos
+        PIP_PACKAGES="pypdf>=4.0.0 rich-click tomli-w crossref-commons platformdirs>=4.0.0"
+        
+        # Try to install with pip3 first, fallback to pip
+        if command -v pip3 >/dev/null 2>&1; then
+            pip3 install --user --break-system-packages $PIP_PACKAGES 2>/dev/null || \
+            pip3 install --user $PIP_PACKAGES 2>/dev/null || \
+            echo "⚠️  Failed to install some Python dependencies via pip3"
+        elif command -v pip >/dev/null 2>&1; then
+            pip install --user --break-system-packages $PIP_PACKAGES 2>/dev/null || \
+            pip install --user $PIP_PACKAGES 2>/dev/null || \
+            echo "⚠️  Failed to install some Python dependencies via pip"
+        else
+            echo "⚠️  pip not found - some features may not work properly"
+        fi
+
         # Update TeX file database if texlive is installed
         if command -v mktexlsr >/dev/null 2>&1; then
             echo "Updating TeX file database..."
@@ -24,6 +42,7 @@ case "$1" in
         if command -v rxiv >/dev/null 2>&1; then
             echo "✅ rxiv-maker installed successfully!"
             echo "   Run 'rxiv --help' to get started"
+            echo "   Note: Some dependencies installed via pip to ensure compatibility"
         else
             echo "⚠️  Installation completed but 'rxiv' command not found in PATH"
             echo "   You may need to restart your shell or run 'hash -r'"
