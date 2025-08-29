@@ -278,7 +278,7 @@ reprepro -b apt-repo export
 - Test workflows with dry-run mode
 
 ### Version Updates
-1. **Update package version** in `src/rxiv_maker/__version__.py`
+1. **Version is auto-detected** from henriqueslab/rxiv-maker repository during workflow execution
 2. **Update changelog** in `debian/changelog`
 3. **Test build locally** with `./scripts/build-deb.sh`
 4. **Release through GitHub** triggers automated publication
