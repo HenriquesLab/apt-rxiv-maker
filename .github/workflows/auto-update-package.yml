@@ -357,9 +357,7 @@ jobs:
             --title "$PR_TITLE" \
             --body "$PR_BODY" \
             --head "${{ steps.update.outputs.branch_name }}" \
-            --base main \
-            --label "automated" \
-            --label "version-update"
+            --base main
 
           PR_URL=$(gh pr view "${{ steps.update.outputs.branch_name }}" --json url --jq .url)
           echo "✅ Pull request created: $PR_URL"
