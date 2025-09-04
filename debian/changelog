@@ -1,3 +1,9 @@
+rxiv-maker (1.6.2-1) unstable; urgency=medium
+
+  * Automated update to upstream version v1.6.2
+
+ -- GitHub Actions <github-actions[bot]@users.noreply.github.com>  Thu, 04 Sep 2025 10:56:46 +0000
+
 rxiv-maker (1.6.1-5) stable; urgency=medium
 
   * MAJOR: Switch to PyInstaller standalone binaries
